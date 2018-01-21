@@ -21,9 +21,9 @@ ruleset hello_world {
   rule hello_monkey {
     select when echo monkey
     pre {
-      name = (event:attr("name").klog("name chosen: ") != null) => event:attr("name") | "Monkey"
+      name = event:attr("name").klog("name chosen: ")
     }
-    send_directive("say", {"something": "Hello " + name})
+    send_directive("say", {"something": "Hello " + name.defaultsTo("Monkey")})
   }
 
 }
