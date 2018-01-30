@@ -1,16 +1,19 @@
 ruleset lab2 {
   meta {
-    use module lab2_keys
-    use module lab2 alias twilio
-        with account_sid = keys:twilio("account_sid")
-             auth_token = keys:twilio("auth_token")
+    configure using account_sid = ""
+                    auth_token = ""
+    provides
+        send_sms
   }
 
-  rule test_send_sms {
-    select when test new_message
-    twilio:send_sms(event:attr("to"),
-                    event:attr("from"),
-                    event:attr("message")
-                   )
+  global {
+    send_sms = defaction(to, from, message) {
+       base_url = <<https://#{account_sid}:#{auth_token}@api.twilio.com/2010-04-01/Accounts/#{account_sid}/>>
+       http:post(base_url + "Messages.json", form = {
+                "From":from,
+                "To":to,
+                "Body":message
+            })
+    }
   }
 }
