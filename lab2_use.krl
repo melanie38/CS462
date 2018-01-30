@@ -13,4 +13,10 @@ ruleset lab2_use {
                     event:attr("message")
                    )
   }
+
+  rule test_get_records {
+    select when test get_records
+    twilio:get_history(event:attr("category"))
+  }
+
 }
