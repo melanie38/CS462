@@ -16,8 +16,12 @@ ruleset lab2_use {
 
   rule test_get_records {
     select when test get_records
-    twilio:messages(event:attr("to"),
-                    event:attr("from"))
+    pre {
+      content = twilio:messages(event:attr("to"),
+                      event:attr("from"))
+    }
+    send_directive("Response", {"Content": content})
+
   }
 
 }
