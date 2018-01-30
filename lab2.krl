@@ -16,7 +16,7 @@ ruleset lab2 {
             })
     }
 
-//    get_history = message() {
+//    messages = function() {
 //      url = <<https://#{account_sid}:#{auth_token}@api.twilio.com//2010-04-01/Accounts/#{account_sid}/Usage/Records/Category/sms>>
 //      response = http:get(url).decode()
 //      send_directive("Response from Twilio", {"content": response})

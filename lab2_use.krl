@@ -16,7 +16,7 @@ ruleset lab2_use {
 
   rule test_get_records {
     select when test get_records
-    twilio:get_history()
+    twilio:messages()
   }
 
 }
