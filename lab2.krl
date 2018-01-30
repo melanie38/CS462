@@ -9,15 +9,17 @@ ruleset lab2 {
 
   global {
 
-    messages = defaction(from, to) {
-      base_url = <<https://#{account_sid}:#{auth_token}@api.twilio.com//2010-04-01/Accounts/#{account_sid}/Messages>>
+    base_url = <<https://#{account_sid}:#{auth_token}@api.twilio.com//2010-04-01/Accounts/#{account_sid}/>>
 
-      response = http:get(base_url, {"From":from, "To":to})
+    messages = function(from, to) {
+      response = http:get(base_url + "Messages.json", form = {
+                          "From":from,
+                          "To":to});
 
       status = response{"status_code"};
 
       error_info = {
-        "error": "sky cloud request was unsuccesful.",
+        "error": "Twilio request was unsuccesful.",
         "httpStatus": {
             "code": status,
             "message": response{"status_line"}
@@ -30,13 +32,11 @@ ruleset lab2 {
       error = error_info.put({"skyCloudError": response_error, "skyCloudErrorMsg": response_error_str, "skyCloudReturnValue": response_content});
       is_bad_response = (response_content.isnull() || response_content == "null" || response_error || response_error_str);
 
-
       // if HTTP status was OK & the response was not null and there were no errors...
       (status == "200" && not is_bad_response) => response_content | error
     }
 
     send_sms = defaction(to, from, message) {
-       base_url = <<https://#{account_sid}:#{auth_token}@api.twilio.com/2010-04-01/Accounts/#{account_sid}/>>
        http:post(base_url + "Messages.json", form = {
                 "From":from,
                 "To":to,
