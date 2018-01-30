@@ -1,6 +1,6 @@
 ruleset lab2_use {
   meta {
-    use module lab2_keys
+    use module twilio_keys
     use module lab2 alias twilio
         with account_sid = keys:twilio("account_sid")
              auth_token = keys:twilio("auth_token")
