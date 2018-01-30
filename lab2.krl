@@ -16,10 +16,11 @@ ruleset lab2 {
             })
     }
 
-//    messages = function() {
-//      url = <<https://#{account_sid}:#{auth_token}@api.twilio.com//2010-04-01/Accounts/#{account_sid}/Usage/Records/Category/sms>>
-//      response = http:get(url).decode()
-//      send_directive("Response from Twilio", {"content": response})
-//    }
+    messages = defaction(from, to) {
+      url = <<https://#{account_sid}:#{auth_token}@api.twilio.com//2010-04-01/Accounts/#{account_sid}/Messages>>
+      response = http:get(url, {"From":from, "To":to}).decode()
+      send_directive("Response from Twilio", {"content": response.klog("content: ")})
+    }
+
   }
 }

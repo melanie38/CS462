@@ -16,7 +16,8 @@ ruleset lab2_use {
 
   rule test_get_records {
     select when test get_records
-    twilio:messages()
+    twilio:messages(event:attr("to"),
+                    event:attr("from"))
   }
 
 }
