@@ -48,7 +48,7 @@ ruleset wovyn_base {
       message = (temperature > temperature_threshold) => "Temperature above threshold" | "Temperature normal"
     }
 
-    send_directive("info", {"message": message})
+    send_directive("info", {"message": message.klog("message")})
 
     fired {
       raise wovyn event "threshold_violation" attributes {
@@ -56,7 +56,6 @@ ruleset wovyn_base {
         "timestamp" : timestamp
       };
     }
-
   }
 
 }
