@@ -15,10 +15,12 @@ ruleset wovyn_base {
       timestamp = attributes{"timestamp"}
     }
 
-    raise wovyn event "new_temperature_reading" attributes {
-      "temperature" : temperature,
-      "timestamp" : timestamp
-    } if (event:attrs("genericThing" != null));
+    fired {
+      raise wovyn event "new_temperature_reading" attributes {
+        "temperature" : temperature,
+        "timestamp" : timestamp
+      };
+    }
 
   }
 
