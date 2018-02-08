@@ -9,7 +9,7 @@ ruleset wovyn_base {
   rule process_heartbeat {
     select when wovyn heartbeat
 
-    if event:attrs{"genericThing"} != null then
+    if (event:attrs{"genericThing"} != null) then
       pre {
         attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
         tempArray = attributes[0].klog("tempArray")
@@ -34,17 +34,6 @@ ruleset wovyn_base {
     }
 
     send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
-
-  }
-
-  rule find_high_temps {
-    select when wovyn new_temperature_reading
-
-    pre {
-      temperature = event:attr{"temperature"}
-    }
-
-
 
   }
 
