@@ -12,7 +12,7 @@ ruleset wovyn_base {
   }
 
   global {
-    temperature_threshold = 70
+    temperature_threshold = 80
     recipient = +13853099608
     sender = +15308028023
   }
@@ -58,7 +58,7 @@ ruleset wovyn_base {
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
         "timestamp" : timestamp
-      };
+      } if (temperature > temperature_threshold);
     }
   }
 
