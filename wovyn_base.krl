@@ -6,8 +6,12 @@ ruleset wovyn_base {
     logging on
   }
 
+  global {
+    temperature_threshold = 70
+  }
+
   rule process_heartbeat {
-    select when wovyn heartbeat
+    select when wovyn heartbeat where event:attrs{"genericThing"} != null
 
       pre {
         attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
@@ -15,9 +19,6 @@ ruleset wovyn_base {
         temperature = tempArray{"temperatureF"}.klog("temperatureF")
         timestamp = time:now().klog("time")
       }
-
-      if event:attrs{"genericThing"} != null then
-        noop()
 
       fired {
         raise wovyn event "new_temperature_reading" attributes {
@@ -36,6 +37,25 @@ ruleset wovyn_base {
     }
 
     send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
+
+  }
+
+  rule find_high_temps {
+    select when wovyn new_temperature_reading
+
+    pre {
+      temperature = event:attr{"temperature"}
+    }
+
+    message = temperature > temperature_threshold => "Temperature above threshold" | "Temperature normal"
+    send_directive("info", {"message": message})
+
+    fired {
+      raise wovyn event "threshold_violation" attributes {
+        "temperature" : temperature,
+        "timestamp" : timestamp
+      };
+    }
 
   }
 
