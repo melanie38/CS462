@@ -7,7 +7,7 @@ ruleset wovyn_base {
   }
 
   rule process_heartbeat {
-    select when wovyn heartbeat event:attr("genericThing") != null
+    select when wovyn heartbeat
 
       pre {
         attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
@@ -15,6 +15,9 @@ ruleset wovyn_base {
         temperature = tempArray{"temperatureF"}.klog("temperatureF")
         timestamp = time:now().klog("time")
       }
+
+      if event:attrs{"genericThing"} != null
+        send_directive("say", "fired?": "true")
 
       fired {
         raise wovyn event "new_temperature_reading" attributes {
