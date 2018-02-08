@@ -49,6 +49,7 @@ ruleset wovyn_base {
 
     pre {
       temperature = event:attrs{"temperature"}
+      timestamp = event:attrs{"timestamp"}
       message = (temperature > temperature_threshold) => "Temperature above threshold" | "Temperature normal"
     }
 
