@@ -11,7 +11,9 @@ ruleset wovyn_base {
 
     pre {
       attributes = event:attr("genericThing").klog("attrs")
-      temperature = attributes{["data", "temperatureF"]}.klog("data")
+      data = attributes{"data"}.klog("data")
+      temp = data{"temperature"}.klog("temp")
+      temperature = attributes{["data", "temperature", "temperatureF"]}.klog("temperatureF")
       timestamp = time.now().klog("time")
     }
 
