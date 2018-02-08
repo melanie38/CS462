@@ -32,8 +32,8 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
 
     pre {
-      temperature = event:attr{"temperature"}
-      timestamp = event:attr{"timestamp"}
+      temperature = event:attrs{"temperature"}
+      timestamp = event:attrs{"timestamp"}
     }
 
     send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
