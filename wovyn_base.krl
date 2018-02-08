@@ -6,7 +6,7 @@ ruleset wovyn_base {
   }
 
   rule process_heartbeat {
-    select when wovyn heartbeat
+    select when wovyn heartbeat genericThing
     pre {
       never_used = event:attrs().klog("attrs")
     }
