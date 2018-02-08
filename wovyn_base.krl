@@ -10,7 +10,8 @@ ruleset wovyn_base {
     pre {
       never_used = event:attrs().klog("attrs")
     }
-    send_directive("say", {"payload": never_used})
+    if event:attrs("genericThing" != null) then
+      send_directive("say", {"payload": never_used})
   }
 
 }
