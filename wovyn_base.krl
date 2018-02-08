@@ -16,7 +16,7 @@ ruleset wovyn_base {
         timestamp = time:now().klog("time")
       }
 
-      if event:attrs{"genericThing"} != null
+      if event:attrs{"genericThing"} != null then
         send_directive("say", "fired?": "true")
 
       fired {
