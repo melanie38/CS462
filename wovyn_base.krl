@@ -4,10 +4,17 @@ ruleset wovyn_base {
     name "Lab 3 - Wovyn"
     author "Melanie Lambson"
     logging on
+
+    use module twilio_keys
+    use module lab2 alias twilio
+        with account_sid = keys:twilio("account_sid")
+             auth_token = keys:twilio("auth_token")
   }
 
   global {
     temperature_threshold = 70
+    recipient = +13853099608
+    sender = +15308028023
   }
 
   rule process_heartbeat {
@@ -35,9 +42,6 @@ ruleset wovyn_base {
       temperature = event:attrs{"temperature"}
       timestamp = event:attrs{"timestamp"}
     }
-
-    send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
-
   }
 
   rule find_high_temps {
@@ -56,6 +60,19 @@ ruleset wovyn_base {
         "timestamp" : timestamp
       };
     }
+  }
+
+  rule threshold_notification {
+    select when wovyn threshold_violation
+
+    pre {
+    message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
+    }
+
+    twilio:send_sms(recipient,
+                    sender,
+                    message
+                    )
   }
 
 }
