@@ -7,9 +7,8 @@ ruleset wovyn_base {
   }
 
   rule process_heartbeat {
-    select when wovyn heartbeat
-
-    if (event:attrs{"genericThing"} != null) then
+    select when wovyn heartbeat event:attrs{"genericThing"} != null
+    
       pre {
         attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
         tempArray = attributes[0].klog("tempArray")
