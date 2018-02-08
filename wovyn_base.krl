@@ -9,20 +9,20 @@ ruleset wovyn_base {
   rule process_heartbeat {
     select when wovyn heartbeat
 
-    pre {
-      attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
-      tempArray = attributes[0].klog("tempArray")
-      temperature = tempArray{"temperatureF"}.klog("temperatureF")
-      timestamp = time:now().klog("time")
-    }
+    if event:attrs{"genericThing"} != null then
+      pre {
+        attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
+        tempArray = attributes[0].klog("tempArray")
+        temperature = tempArray{"temperatureF"}.klog("temperatureF")
+        timestamp = time:now().klog("time")
+      }
 
-    fired {
-      raise wovyn event "new_temperature_reading" attributes {
-        "temperature" : temperature,
-        "timestamp" : timestamp
-      };
-    }
-
+      fired {
+        raise wovyn event "new_temperature_reading" attributes {
+          "temperature" : temperature,
+          "timestamp" : timestamp
+        };
+      }
   }
 
   rule read_temperature {
@@ -34,6 +34,17 @@ ruleset wovyn_base {
     }
 
     send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
+
+  }
+
+  rule find_high_temps {
+    select when wovyn new_temperature_reading
+
+    pre {
+      temperature = event:attr{"temperature"}
+    }
+
+
 
   }
 
