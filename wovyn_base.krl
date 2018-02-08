@@ -10,7 +10,7 @@ ruleset wovyn_base {
     pre {
       never_used = event:attrs().klog("attrs")
     }
-    send_directive("say", {"something": "heartbeat detected"})
+    send_directive("say", {"payload": never_used})
   }
 
 }
