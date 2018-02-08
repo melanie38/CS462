@@ -48,7 +48,7 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
 
     pre {
-      temperature = event:attr{"temperature"}
+      temperature = event:attrs{"temperature"}
       message = (temperature > temperature_threshold) => "Temperature above threshold" | "Temperature normal"
     }
 
