@@ -10,9 +10,9 @@ ruleset wovyn_base {
     select when wovyn heartbeat
 
     pre {
-      attributes = event:attrs("genericThing").klog("attrs")
-      temperature = attributes{"temperature"}
-      timestamp = attributes{"timestamp"}
+      attributes = event:attr("genericThing").klog("attrs")
+      temperature = attributes{"temperature"}.klog("temp")
+      timestamp = attributes{"timestamp"}.klog("time")
     }
 
     fired {
@@ -28,8 +28,8 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
 
     pre {
-      temperature = event:attrs{"temperature"}
-      timestamp = event:attrs{"timestamp"}
+      temperature = event:attr{"temperature"}
+      timestamp = event:attr{"timestamp"}
     }
 
     send_directive("print", {"Temperature": temperature, "Timestamp": timestamp})
