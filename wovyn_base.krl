@@ -17,7 +17,7 @@ ruleset wovyn_base {
       }
 
       if event:attrs{"genericThing"} != null then
-        send_directive("say", "fired?": "true")
+        send_directive("say", {"fired": "true"})
 
       fired {
         raise wovyn event "new_temperature_reading" attributes {
