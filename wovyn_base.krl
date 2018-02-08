@@ -47,7 +47,7 @@ ruleset wovyn_base {
       temperature = event:attr{"temperature"}
     }
 
-    message = temperature > temperature_threshold => "Temperature above threshold" | "Temperature normal"
+    message = (temperature > temperature_threshold) => "Temperature above threshold" | "Temperature normal"
     send_directive("info", {"message": message})
 
     fired {
