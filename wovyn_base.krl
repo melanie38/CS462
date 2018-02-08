@@ -10,9 +10,8 @@ ruleset wovyn_base {
     select when wovyn heartbeat
 
     pre {
-      attributes = event:attr("genericThing").klog("attrs")
-      data = attributes{["data", "temperature"]}.klog("data")
-      tempArray = data[0].klog("tempArray")
+      attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
+      tempArray = attributes[0].klog("tempArray")
       temperature = tempArray{"temperatureF"}.klog("temperatureF")
       timestamp = time:now().klog("time")
     }
