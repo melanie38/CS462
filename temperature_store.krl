@@ -3,26 +3,45 @@ ruleset temperature_store {
   meta {
     name "Store Temperatures"
     author "Melanie Lambson"
+
+    provides temperatures, threshold_violations, inrange_temperatures
+    shares temperatures, threshold_violations, inrange_temperatures
   }
 
   global {
     temperature_threshold = 70
+
+    temperatures = function() {
+      ent:all_temperatures
+    }
+
+    threshold_violations = function() {
+      ent:violations
+    }
+
+    inrange_temperatures = function() {
+      ent:all_temperatures.difference(ent:violations)
+    }
+
   }
 
   rule collect_temperatures {
     select when wovyn new_temperature_reading where event:attrs{"genericThing"} != null
 
     pre {
-      attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
-      tempArray = attributes[0].klog("tempArray")
-      temperature = tempArray{"temperatureF"}.klog("temperatureF")
-      timestamp = time:now().klog("time")
+      attributes = event:attrs{["genericThing", "data", "temperature"]}
+      tempArray = attributes[0]
+      temperature = tempArray{"temperatureF"}
+      timestamp = time:now()
       newEntry = {"timestamp" : timestamp, "temperature" : temperature}
     }
 
     fired {
       ent:index := 1 + ent:index.defaultsTo(-1);
-      ent:temperatures := ent:temperatures.defaultsTo({}).put(ent:index, newEntry).klog("temperatures map");
+      ent:all_temperatures := ent:all_temperatures.defaultsTo({}).put(ent:index, newEntry)
+
+      temperatures.klog("all temperatures")
+      inrange_temperatures.klog("in range temperatures")
 
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
@@ -42,11 +61,13 @@ ruleset temperature_store {
 
     fired {
       ent:violation_index := 1 + ent:violation_index.defaultsTo(-1);
-      ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry).klog("out of range temperatures");
+      ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry)
+
+      threshold_violations.klog("out of range temperatures")
     }
   }
 
-  rule clear_temeratures {
+  rule clear_temperatures {
     select when sensor reading_reset
 
     always {
