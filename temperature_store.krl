@@ -16,7 +16,7 @@ ruleset temperature_store {
     }
 
     fired {
-      ent:temperatures.put(newEntry)
+      ent:temperatures := ent:temperatures.defaultsTo({}).put(newEntry)
       ent:temperatures.klog("temperatures map")
     }
 
