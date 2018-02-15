@@ -1,7 +1,12 @@
 ruleset temperature_store {
+
   meta {
     name "Store Temperatures"
     author "Melanie Lambson"
+  }
+
+  global {
+    temperature_threshold = 70
   }
 
   rule collect_temperatures {
@@ -24,7 +29,6 @@ ruleset temperature_store {
         "timestamp" : timestamp
       } if (temperature > temperature_threshold);
     }
-
   }
 
   rule collect_threshold_violations {
@@ -40,6 +44,17 @@ ruleset temperature_store {
       ent:violation_index := 1 + ent:violation_index.defaultsTo(-1);
       ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry).klog("out of range temperatures");
     }
-
   }
+
+  rule clear_temeratures {
+    select when sensor reading_reset
+
+    always {
+      clear ent:index;
+      clear ent:temperatures;
+      clear ent:violation_index;
+      clear ent:violations;
+    }
+  }
+
 }
