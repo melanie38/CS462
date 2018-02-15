@@ -9,7 +9,7 @@ ruleset temperature_store {
   }
 
   global {
-    temperature_threshold = 70
+    temperature_threshold = 80
 
     temperatures = function() {
       ent:all_temperatures
@@ -36,6 +36,7 @@ ruleset temperature_store {
       newEntry = {"timestamp" : timestamp, "temperature" : temperature}
       data = temperatures().klog("all temperatures")
       data2 = inrange_temperatures().klog("in range temperatures")
+      data3 = threshold_violations().klog("out of range temperatures")
     }
 
     fired {
@@ -61,8 +62,6 @@ ruleset temperature_store {
     fired {
       ent:violation_index := 1 + ent:violation_index.defaultsTo(-1);
       ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry);
-
-      threshold_violations().klog("out of range temperatures");
     }
   }
 
