@@ -9,6 +9,7 @@ ruleset wovyn_base {
     use module lab2 alias twilio
         with account_sid = keys:twilio("account_sid")
              auth_token = keys:twilio("auth_token")
+    use module temperature_store alias store
   }
 
   global {
@@ -21,10 +22,10 @@ ruleset wovyn_base {
     select when wovyn heartbeat where event:attrs{"genericThing"} != null
 
       pre {
-        attributes = event:attrs{["genericThing", "data", "temperature"]}.klog("attrs")
-        tempArray = attributes[0].klog("tempArray")
-        temperature = tempArray{"temperatureF"}.klog("temperatureF")
-        timestamp = time:now().klog("time")
+        attributes = event:attrs{["genericThing", "data", "temperature"]}
+        tempArray = attributes[0]
+        temperature = tempArray{"temperatureF"}
+        timestamp = time:now()
       }
 
       fired {
@@ -53,8 +54,6 @@ ruleset wovyn_base {
       message = (temperature > temperature_threshold) => "Temperature above threshold" | "Temperature normal"
     }
 
-    send_directive("info", {"message": message.klog("message")})
-
     fired {
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
@@ -70,6 +69,10 @@ ruleset wovyn_base {
     message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
     }
 
+    store:temperatures().klog("all temperatures")
+    store:threshold_violations().klog("out of range temperatures")
+    store:inrange_temperatures().klog("in rande temperatures")
+    
     twilio:send_sms(recipient,
                     sender,
                     message

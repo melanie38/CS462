@@ -34,14 +34,10 @@ ruleset temperature_store {
       temperature = tempArray{"temperatureF"}
       timestamp = time:now()
       newEntry = {"timestamp" : timestamp, "temperature" : temperature}
-      data = temperatures().klog("all temperatures")
-      data2 = inrange_temperatures().klog("in range temperatures")
-      data3 = threshold_violations().klog("out of range temperatures")
     }
 
     fired {
-      ent:index := 1 + ent:index.defaultsTo(-1);
-      ent:all_temperatures := ent:all_temperatures.defaultsTo({}).put(ent:index, newEntry);
+      ent:all_temperatures := ent:all_temperatures.defaultsTo([]).append(newEntry);
 
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
@@ -60,8 +56,7 @@ ruleset temperature_store {
     }
 
     fired {
-      ent:violation_index := 1 + ent:violation_index.defaultsTo(-1);
-      ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry);
+      ent:violations := ent:violations.defaultsTo([]).append(newEntry);
     }
   }
 
@@ -69,9 +64,7 @@ ruleset temperature_store {
     select when sensor reading_reset
 
     always {
-      clear ent:index;
       clear ent:all_temperatures;
-      clear ent:violation_index;
       clear ent:violations;
     }
   }
