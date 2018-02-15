@@ -25,7 +25,7 @@ ruleset wovyn_base {
         attributes = event:attrs{["genericThing", "data", "temperature"]}
         tempArray = attributes[0]
         temperature = tempArray{"temperatureF"}
-        timestamp = time:now()
+        timestamp = time:now().klog("time")
       }
 
       fired {
@@ -40,8 +40,8 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
 
     pre {
-      temperature = event:attrs{"temperature"}
-      timestamp = event:attrs{"timestamp"}
+      temperatures = store:temperatures().klog("all temperatures")
+      inrange = store:inrange_temperatures().klog("in range temperatures")
     }
   }
 
@@ -66,13 +66,10 @@ ruleset wovyn_base {
     select when wovyn threshold_violation
 
     pre {
-    message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
+      violations = store:threshold_violations().klog("out of range temperatures")
+      message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
     }
 
-    store:temperatures().klog("all temperatures")
-    store:threshold_violations().klog("out of range temperatures")
-    store:inrange_temperatures().klog("in rande temperatures")
-    
     twilio:send_sms(recipient,
                     sender,
                     message
