@@ -16,7 +16,29 @@ ruleset temperature_store {
     }
 
     fired {
-      ent:temperatures := ent:temperatures.defaultsTo({}).put(newEntry).klog("temperatures map")
+      ent:index := 1 + ent:index.defaultsTo(-1);
+      ent:temperatures := ent:temperatures.defaultsTo({}).put(ent:index, newEntry).klog("temperatures map");
+
+      raise wovyn event "threshold_violation" attributes {
+        "temperature" : temperature,
+        "timestamp" : timestamp
+      } if (temperature > temperature_threshold);
+    }
+
+  }
+
+  rule collect_threshold_violations {
+    select when wovyn threshold_violation
+
+    pre {
+      temperature = event:attrs{"temperature"}
+      timestamp = event:attrs{"timestamp"}
+      newEntry = {"timestamp" : timestamp, "temperature" : temperature}
+    }
+
+    fired {
+      ent:violation_index := 1 + ent:violation_index.defaultsTo(-1);
+      ent:violations := ent:violations.defaultsTo({}).put(ent:violation_index, newEntry).klog("out of range temperatures");
     }
 
   }
