@@ -70,7 +70,7 @@ ruleset temperature_store {
 
     always {
       clear ent:index;
-      clear ent:temperatures;
+      clear ent:all_temperatures;
       clear ent:violation_index;
       clear ent:violations;
     }
