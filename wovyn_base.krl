@@ -40,8 +40,8 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
 
     pre {
-      temperatures = store:temperatures().klog("all temperatures")
-      inrange = store:inrange_temperatures().klog("in range temperatures")
+      temperature = event:attrs{"temperature"}
+      timestamp = event:attrs{"timestamp"}
     }
   }
 
@@ -66,7 +66,9 @@ ruleset wovyn_base {
     select when wovyn threshold_violation
 
     pre {
+      temperatures = store:temperatures().klog("all temperatures")
       violations = store:threshold_violations().klog("out of range temperatures")
+      inrange = store:inrange_temperatures().klog("in range temperatures")
       message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
     }
 
