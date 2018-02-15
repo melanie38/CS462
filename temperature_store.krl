@@ -12,7 +12,7 @@ ruleset temperature_store {
       tempArray = attributes[0].klog("tempArray")
       temperature = tempArray{"temperatureF"}.klog("temperatureF")
       timestamp = time:now().klog("time")
-      newEntry = {timestamp : temperature}
+      newEntry = {"timestamp" : timestamp, "temperature" : temperature}
     }
 
     fired {
