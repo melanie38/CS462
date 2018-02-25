@@ -59,7 +59,7 @@ ruleset temperature_store {
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
         "timestamp" : timestamp
-      } if (temperature > threshold);
+      } if (temperature.klog("Temperature: ") > ent:sensor_threshold.klog("Threshold: "));
     }
   }
 
@@ -90,10 +90,10 @@ ruleset temperature_store {
     select when sensor profile_updated
 
     pre {
-      name = event:attr("name")
-      location = event:attr("location")
-      threshold = event:attr("threshold")
-      phone = event:attr("phone")
+      name = event:attr("name").klog("name: ")
+      location = event:attr("location").klog("location: ")
+      threshold = event:attr("threshold").klog("threshold: ")
+      phone = event:attr("phone").klog("phone: ")
     }
 
     fired {
