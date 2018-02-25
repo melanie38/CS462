@@ -5,7 +5,8 @@ ruleset temperature_store {
     author "Melanie Lambson"
 
     provides temperatures, threshold_violations, inrange_temperatures
-    shares temperatures, threshold_violations, inrange_temperatures
+    shares temperatures, threshold_violations, inrange_temperatures,
+      name, location, threshold, phone
   }
 
   global {
