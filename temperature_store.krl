@@ -96,6 +96,13 @@ ruleset temperature_store {
       phone = event:attr("phone")
     }
 
+    fired {
+      ent:sensor_name = name;
+      ent:sensor_location = location;
+      ent:sensor_threshold = threshold;
+      ent:sensor_phone = phone;
+    }
+
   }
 
 }
