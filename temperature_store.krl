@@ -90,10 +90,10 @@ ruleset temperature_store {
     select when sensor profile_updated
 
     pre {
-      name = event:attrs{"name"}
-      location = event:attrs{"location"}
-      threshold = event:attrs{"threshold"}
-      phone = event:attrs{"phone"}
+      name = event:attr("name")
+      location = event:attr("location")
+      threshold = event:attr("threshold")
+      phone = event:attr("phone")
     }
 
   }
