@@ -97,10 +97,10 @@ ruleset temperature_store {
     }
 
     fired {
-      ent:sensor_name = name;
-      ent:sensor_location = location;
-      ent:sensor_threshold = threshold;
-      ent:sensor_phone = phone;
+      ent:sensor_name := name;
+      ent:sensor_location := location;
+      ent:sensor_threshold := threshold;
+      ent:sensor_phone := phone;
     }
 
   }
