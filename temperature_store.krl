@@ -9,7 +9,6 @@ ruleset temperature_store {
   }
 
   global {
-    temperature_threshold = 80
 
     temperatures = function() {
       ent:all_temperatures
@@ -21,6 +20,22 @@ ruleset temperature_store {
 
     inrange_temperatures = function() {
       ent:all_temperatures.difference(ent:violations)
+    }
+
+    name = function() {
+      ent:sensor_name.defaultsTo("Wovyn")
+    }
+
+    location = function() {
+      ent:sensor_location.defaultsTo("Salt Lake City")
+    }
+
+    threshold = function() {
+      ent:sensor_threshold.defaultsTo(80)
+    }
+
+    phone = function() {
+    ent:sensor_phone.defaultsTo("+13853099608")
     }
 
   }
@@ -42,7 +57,7 @@ ruleset temperature_store {
       raise wovyn event "threshold_violation" attributes {
         "temperature" : temperature,
         "timestamp" : timestamp
-      } if (temperature > temperature_threshold);
+      } if (temperature > threshold);
     }
   }
 
@@ -67,6 +82,18 @@ ruleset temperature_store {
       clear ent:all_temperatures;
       clear ent:violations;
     }
+  }
+
+  rule sensor_profile {
+    select when sensor profile_updated
+
+    pre {
+      name = event:attrs{"name"}
+      location = event:attrs{"location"}
+      threshold = event:attrs{"threshold"}
+      phone = event:attrs{"phone"}
+    }
+
   }
 
 }
