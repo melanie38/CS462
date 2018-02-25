@@ -4,7 +4,8 @@ ruleset temperature_store {
     name "Store Temperatures"
     author "Melanie Lambson"
 
-    provides temperatures, threshold_violations, inrange_temperatures
+    provides temperatures, threshold_violations, inrange_temperatures,
+      name, location, threshold, phone
     shares temperatures, threshold_violations, inrange_temperatures,
       name, location, threshold, phone
   }
