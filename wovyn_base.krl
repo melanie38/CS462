@@ -14,7 +14,7 @@ ruleset wovyn_base {
 
   global {
     temperature_threshold = 80
-    recipient = ent:sensor_phone
+    recipient = store:phone()
     sender = +15308028023
   }
 
@@ -67,9 +67,10 @@ ruleset wovyn_base {
 
     pre {
       message = "The temperature (" + event:attrs{"temperature"} + ") " + "detected at " + event:attrs{"timestamp"} + " is above the threshold."
+      recipient = store:phone()
     }
 
-    twilio:send_sms("+" + recipient,
+    twilio:send_sms("+" + recipient.klog("Phone number: "),
                     sender,
                     message
                     )

@@ -37,7 +37,7 @@ ruleset temperature_store {
     }
 
     phone = function() {
-      ent:sensor_phone.defaultsTo("+13853099608")
+      "+1" + ent:sensor_phone.defaultsTo("3853099608")
     }
 
   }
