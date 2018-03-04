@@ -6,6 +6,8 @@ ruleset sensor_profile {
 
     provides name, location, threshold, phone
     shares name, location, threshold, phone
+
+    use module manage_sensors alias manager
   }
 
   global {
@@ -44,7 +46,23 @@ ruleset sensor_profile {
       ent:sensor_threshold := threshold.as("Number");
       ent:sensor_phone := phone;
     }
+  }
 
+  rule ruleset_installed {
+    select when wrangler ruleset_added
+
+    pre {
+      name = event:attrs{"name"}
+    }
+
+    always {
+      raise sensor event "ready";
+      raise sensor event "profile_updated" attributes {
+        "name" : name,
+        "phone" : "+13853099608",
+        "threshold" : manager:threshold
+      };
+    }
   }
 
 }
