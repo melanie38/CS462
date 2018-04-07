@@ -7,7 +7,7 @@ ruleset gossip {
 
   global {
     state = function() {
-      ent:pico_state.defaultsTo{{}}.put({
+      ent:pico_state.defaultsTo({}).put({
         "newMessage" : false,
         "lastSeenMessage" : {
           "ABCD-1234-ABCD-1234-ABCD-129B": 5
@@ -27,8 +27,8 @@ ruleset gossip {
       })
     }
     getPeer = function(state) {
-      lastSeenMessage = ent:pico_state{"lastSeenMessage"}.defaultsTo{{}};
-      peers = ent:pico_state{"peers"}.defaultsTo{[]};
+      lastSeenMessage = ent:pico_state{"lastSeenMessage"}.defaultsTo({});
+      peers = ent:pico_state{"peers"}.defaultsTo([]);
 
       // Filter peers who knows your current temperature and those who don't
       firstFilteredPeers = peers.collect(function(peer) {
