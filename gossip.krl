@@ -7,7 +7,7 @@ ruleset gossip {
 
   global {
     state = function() {
-      ent:pico_state.defaultsTo({}).put({
+      ent:pico_state.defaultsTo{{}}.put({
         "newMessage" : false,
         "lastSeenMessage" : {
           "ABCD-1234-ABCD-1234-ABCD-129B": 5
