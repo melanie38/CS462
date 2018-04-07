@@ -22,20 +22,38 @@ ruleset gossip {
               "ABCD-1234-ABCD-1234-ABCD-129B": 5,
               "ABCD-1234-ABCD-1234-ABCD-123C": 10
             }
+          },
+          {
+            "id" : "ABCD-1234-ABCD-1234-ABCD-125B",
+            "knowsCurrentTemp" : true,
+            "lastSeenMessage" : {
+              "ABCD-1234-ABCD-1234-ABCD-125A": 3,
+              "ABCD-1234-ABCD-1234-ABCD-129B": 5,
+              "ABCD-1234-ABCD-1234-ABCD-123C": 10
+            }
+          },
+          {
+            "id" : "ABCD-1234-ABCD-1234-ABCD-125C",
+            "knowsCurrentTemp" : false,
+            "lastSeenMessage" : {
+              "ABCD-1234-ABCD-1234-ABCD-125A": 3,
+              "ABCD-1234-ABCD-1234-ABCD-129B": 5,
+              "ABCD-1234-ABCD-1234-ABCD-123C": 10
+            }
           }
         ]
       })
     }
     getPeer = function(state) {
       lastSeenMessage = ent:pico_state{"lastSeenMessage"}.defaultsTo({});
-      peers = ent:pico_state{"peers"}.defaultsTo([]);
+      peers = ent:pico_state{"peers"}.defaultsTo([]).klog("All Peers: ");
 
       // Filter peers who knows your current temperature and those who don't
       firstFilteredPeers = peers.collect(function(peer) {
         peer{"knowsCurrentTemp"} == true => "knows" | "ignore"
       });
 
-      results = firstFilteredPeers{"ignore"};
+      results = firstFilteredPeers{"ignore"}.klog("Peers who ignore: ");
 
       // Filter peers who knows your current temperature but don't have all the messages you have
       firstFilteredPeers{"knows"}.filter(function(peer) {
